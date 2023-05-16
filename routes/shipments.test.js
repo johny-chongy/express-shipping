@@ -1,11 +1,16 @@
 "use strict";
 
+// set up mock
+const shipIt = require("../shipItApi");
+shipIt.shipProduct = jest.fn();
+shipIt.shipProduct.mockReturnValue(1337);
+
 const request = require("supertest");
 const app = require("../app");
 
-
 describe("POST /", function () {
   test("valid", async function () {
+
     const resp = await request(app).post("/shipments").send({
       productId: 1000,
       name: "Test Tester",
@@ -17,6 +22,7 @@ describe("POST /", function () {
   });
 
   test("throws error if empty request body", async function () {
+
     const resp = await request(app)
       .post("/shipments")
       .send();
