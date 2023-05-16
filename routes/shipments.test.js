@@ -3,13 +3,18 @@
 // set up mock
 const shipIt = require("../shipItApi");
 shipIt.shipProduct = jest.fn();
-shipIt.shipProduct.mockReturnValue(1337); //TODO: is it good to put this here?
+//TODO: put in beforeAll/each
 
 const request = require("supertest");
 const app = require("../app");
 
 describe("POST /", function () {
   test("valid", async function () {
+    const shippedId = 1234;
+    shipIt.shipProduct.mockReturnValue(shippedId);
+
+    // console.log("calling mocked function: ", shipIt.shipProduct());
+    // console.log("mocked function results: ", shipIt.shipProduct.mock.results);
 
     const resp = await request(app).post("/shipments").send({
       productId: 1000,
@@ -18,18 +23,17 @@ describe("POST /", function () {
       zip: "12345-6789",
     });
 
-    expect(resp.body).toEqual({ shipped: expect.any(Number) });
+    expect(resp.body).toEqual({ shipped: shippedId });
   });
 
   test("throws error if empty request body", async function () {
-
     const resp = await request(app)
       .post("/shipments")
       .send();
     expect(resp.statusCode).toEqual(400);
   });
 
-  test("throws error with 1 missing body", async function () {
+  test("throws error with 1 missing/unexpected key", async function () {
     const resp = await request(app).post("/shipments").send({
       productId: 1000,
       badbody: "Test Tester",
