@@ -3,7 +3,7 @@
 // set up mock
 const shipIt = require("../shipItApi");
 shipIt.shipProduct = jest.fn();
-shipIt.shipProduct.mockReturnValue(1337);
+shipIt.shipProduct.mockReturnValue(1337); //TODO: is it good to put this here?
 
 const request = require("supertest");
 const app = require("../app");
