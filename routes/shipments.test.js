@@ -22,4 +22,27 @@ describe("POST /", function () {
       .send();
     expect(resp.statusCode).toEqual(400);
   });
+
+  test("throws error with 1 missing body", async function () {
+    const resp = await request(app).post("/shipments").send({
+      productId: 1000,
+      badbody: "Test Tester",
+      addr: "100 Test St",
+      zip: "12345-6789",
+    });
+
+    expect(resp.statusCode).toEqual(400);
+  })
+
+  test("throws error where productId < 1000", async function () {
+    const resp = await request(app).post("/shipments").send({
+      productId: 999,
+      name: "Test Tester",
+      addr: "100 Test St",
+      zip: "12345-6789",
+    });
+
+    expect(resp.statusCode).toEqual(400);
+  })
+
 });
